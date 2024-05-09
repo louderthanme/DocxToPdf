@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2018",          // Compiled JavaScript target
+    "target": "ES6",          // Compiled JavaScript target
     "module": "commonjs",        // CommonJS modules for Node.js compatibility
     "outDir": "./dist",          // Output directory for compiled files
     "rootDir": "./src",          // Root directory for source files
