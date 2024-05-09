@@ -1,24 +1,49 @@
-import {exec} from 'child_process';
-import path from 'path';
+import libre from "libreoffice-convert";
+import fs from "fs";
+import path from "path";
 
-type ConvertCallback = (error: Error | null, outputPath?: string) => void;
+const extend = ".pdf";
 
-function convertToPDF(filePath: string, callback:ConvertCallback) {
-    const outputPath = filePath.replace(/\.\w+$/, '.pdf');  // Change the file extension to .pdf
-    const command = `libreoffice --headless --convert-to pdf --outdir ${path.dirname(filePath)} ${filePath}`;
+const convertToPDF = (
+  filePath: string,
+  callback: (error: Error | null, outputPath?: string) => void
+) => {
+  const outputPath = path.join(
+    path.dirname(filePath),
+    path.basename(filePath, path.extname(filePath)) + extend
+  );
 
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error: ${error.message}`);
-            return callback(error);
+  // Read the file into a Buffer
+  fs.readFile(filePath, (readError, fileContent) => {
+    if (readError) {
+      console.error(`Error reading file: ${readError.message}`);
+      return callback(readError);
+    }
+
+    // Convert the Buffer to a PDF
+    libre.convert(
+      fileContent,
+      extend,
+      undefined,
+      (err: Error | null, done: Buffer) => {
+        if (err) {
+          console.error(`Conversion error: ${err.message}`);
+          return callback(err);
         }
-        if (stderr) {
-            console.error(`Stderr: ${stderr}`);
-            return callback(new Error(stderr));
-        }
-        console.log(`stdout: ${stdout}`);
-        callback(null, outputPath);
-    });
-}
+
+        // Write the resulting Buffer to a file
+        fs.writeFile(outputPath, done, (writeError) => {
+          if (writeError) {
+            console.error(`Error writing file: ${writeError.message}`);
+            return callback(writeError);
+          }
+
+          console.log("Conversion successful:", outputPath);
+          callback(null, outputPath);
+        });
+      }
+    );
+  });
+};
 
 export default convertToPDF;
