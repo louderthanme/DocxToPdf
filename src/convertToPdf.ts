@@ -20,3 +20,5 @@ function convertToPDF(filePath: string, callback:ConvertCallback) {
         callback(null, outputPath);
     });
 }
+
+export default convertToPDF;
