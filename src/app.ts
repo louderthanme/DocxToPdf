@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
-import formatDate from './';
+import formatDate from './utils/dateFormatting';
+
+
 
 interface CustomRequest extends Request {
     file?: Express.Multer.File;
@@ -18,7 +20,7 @@ const storage = multer.diskStorage({
 
         const fileExtensionRegex = /\.[0-9a-z]+$/i;
         const baseName = file.originalname.replace(fileExtensionRegex, '');
-        const newFilename = `${baseName} - ${formatDate(Date.now())}`;
+        const newFilename = `${baseName} - ${formatDate(new Date())}`;
 
 
 
