@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "type": "module",
-  "devDependencies": {
+    "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/multer": "^1.4.11",
     "ts-node": "^10.9.2",
