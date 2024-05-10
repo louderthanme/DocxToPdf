@@ -46,7 +46,7 @@ app.post('/convert', upload.single('file'), (req: CustomRequest, res: Response) 
               console.error('Error downloading file:', downloadErr);
               res.status(500).send('Error downloading file');
           } else {
-              fs.unlinkSync(convertedFilePath); // Optionally delete the file
+              fs.unlinkSync(convertedFilePath); 
           }
       });
   });
