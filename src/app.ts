@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
+import fs from 'fs'; // Import the file system module
 import convertToPdf from "./convertToPdf";
 import formatDate from "./dateFormatting";
 
@@ -18,28 +19,38 @@ const storage = multer.diskStorage({
     const fileExtensionRegex = /\.[0-9a-z]+$/i;
     const baseName = file.originalname.replace(fileExtensionRegex, "");
     const newFilename = `${baseName} - ${formatDate(new Date())}`;
-
     cb(null, newFilename);
   },
 });
 
 const upload = multer({ storage: storage });
 
-app.post(
-  "/convert",
-  upload.single("file"),
-  async (req: CustomRequest, res: Response) => {
-    if (!req.file) {
-      return res.status(400).send("No file uploaded.");
-    }
-    convertToPdf(req.file.path, (err, convertedFilePath) => {
-      if (err) {
-        return res.status(500).send("Error converting file");
-      }
-      res.send(`File converted and stored at ${convertedFilePath}`);
-    });
+app.post('/convert', upload.single('file'), (req: CustomRequest, res: Response) => {
+  if (!req.file) {
+      return res.status(400).send('No file uploaded.');
   }
-);
+  const filePath = req.file.path;  // This is the path to the uploaded file
+
+  convertToPdf(filePath, (err, convertedFilePath) => {
+      if (err) {
+          console.error('Error converting file:', err);
+          return res.status(500).send('Error converting file');
+      }
+      if (!convertedFilePath) {
+          console.error('Conversion did not return a file path.');
+          return res.status(500).send('File conversion did not return a valid path.');
+      }
+
+      res.download(convertedFilePath, (downloadErr) => {
+          if (downloadErr) {
+              console.error('Error downloading file:', downloadErr);
+              res.status(500).send('Error downloading file');
+          } else {
+              fs.unlinkSync(convertedFilePath); // Optionally delete the file
+          }
+      });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
