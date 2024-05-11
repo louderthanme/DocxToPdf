@@ -3,6 +3,7 @@ import multer from "multer";
 import fs from 'fs'; // Import the file system module
 import convertToPdf from "./convertToPdf";
 import formatDate from "./dateFormatting";
+import cors from "cors";
 
 interface CustomRequest extends Request {
   file?: Express.Multer.File;
@@ -30,6 +31,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+app.use(cors({
+  origin: 'http://localhost:5173'  // This should match your app's URL
+}));
 
 app.post('/convert', upload.single('file'), (req: CustomRequest, res: Response) => {
   if (!req.file) {
