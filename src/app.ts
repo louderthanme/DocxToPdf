@@ -51,11 +51,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.use(
-  cors({
-    origin: "https://frontend-docxtopdf.vercel.app/", // This should match your app's URL
-  })
-);
+const corsOptions = {
+  origin: 'https://frontend-docxtopdf.vercel.app', // make sure to change this to your frontend URL
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 app.post(
   "/convert",
