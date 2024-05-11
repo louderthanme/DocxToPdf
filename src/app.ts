@@ -53,7 +53,7 @@ const upload = multer({ storage: storage });
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // This should match your app's URL
+    origin: "https://frontend-docxtopdf.vercel.app/", // This should match your app's URL
   })
 );
 
