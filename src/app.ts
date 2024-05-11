@@ -64,6 +64,15 @@ app.post(
     if (!req.file) {
       return res.status(400).send("No file uploaded.");
     }
+
+    // Check file extension
+    const fileExtension = req.file.originalname.split(".").pop();
+    if (fileExtension !== "doc" && fileExtension !== "docx") {
+      return res
+        .status(400)
+        .send("Invalid file type. Please upload a .doc or .docx file.");
+    }
+
     const filePath = req.file.path;
     console.log("File path:", filePath); // Debug log
 
@@ -73,7 +82,9 @@ app.post(
         return res.status(500).send("Error converting file");
       }
 
-      const filename = req.newFilename ? `${req.newFilename}.pdf` : "default_filename.pdf";
+      const filename = req.newFilename
+        ? `${req.newFilename}.pdf`
+        : "default_filename.pdf";
 
       res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
 
