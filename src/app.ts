@@ -72,6 +72,11 @@ app.post(
         console.error("Error converting file:", err);
         return res.status(500).send("Error converting file");
       }
+
+      const filename = req.newFilename ? `${req.newFilename}.pdf` : "default_filename.pdf";
+
+      res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+
       if (!convertedFilePath) {
         console.error("Conversion did not return a file path.");
         return res
