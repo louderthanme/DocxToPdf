@@ -21,17 +21,14 @@ This service converts DOCX documents to PDF format using a Node.js backend that 
    ```bash
    git clone https://github.com/louderthanme/DocxToPdf.git
    cd DocxToPdf
-
-Install Dependencies
-bash
-Copy code
+**
+Install Dependencies**
 yarn install
 
-Run the Application Locally
-Ensure LibreOffice is installed on your system.
+**Run the Application Locally
+**Ensure LibreOffice is installed on your system.
+
 Run the application using:
-bash
-Copy code
 yarn dev
 
 
@@ -46,9 +43,11 @@ docker run -p 3000:3000 docx-to-pdf-converter
 
 Push your Docker image to a registry.
 Set up a web service on Render using the pushed image.
+
 **
 Environment Variables
 **
+
 REACT_APP_API_URL - Set this in your frontend to point to the deployed service URL.
 TypeScript Configuration
 
@@ -68,21 +67,24 @@ Here is a sample tsconfig.json for setting up TypeScript:
 }
 
 **Handling CORS**
+
 To handle CORS and allow your frontend to communicate with the backend, add CORS middleware to your Express setup:
 
 const cors = require('cors');
 app.use(cors({
   origin: 'https://yourfrontendurl.com' // Adjust this to match your frontend URL
 }));
-Usage
-Accessing the Service
+
+
+**Accessing the Service**
 
 Navigate to the public URL provided by Render or your deployment service.
 Use the provided endpoints to upload documents for conversion.
-API Endpoints
 
+**API Endpoints
+**
 POST /convert: Accepts a DOCX file and returns a PDF file.
 Contributing
 Contributions are welcome! Please fork the repository and submit pull requests with any enhancements or bug fixes.
 
-License
+Licensed under MIT license
