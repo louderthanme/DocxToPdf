@@ -34,30 +34,27 @@ bash
 Copy code
 yarn dev
 
-Deployment
-Build the Docker Image
 
-bash
-Copy code
+**Local Deployment**
+Build the Docker Image
 docker build -t docx-to-pdf-converter .
 Run the Docker Container
 
-bash
-Copy code
 docker run -p 3000:3000 docx-to-pdf-converter
-Deploy to Render
+
+**Deploy to Render**
 
 Push your Docker image to a registry.
 Set up a web service on Render using the pushed image.
-
-
+**
 Environment Variables
+**
 REACT_APP_API_URL - Set this in your frontend to point to the deployed service URL.
 TypeScript Configuration
+
 Here is a sample tsconfig.json for setting up TypeScript:
 
-json
-Copy code
+
 {
   "compilerOptions": {
     "module": "commonjs",
@@ -69,11 +66,10 @@ Copy code
   },
   "include": ["src/**/*"]
 }
-Handling CORS
+
+**Handling CORS**
 To handle CORS and allow your frontend to communicate with the backend, add CORS middleware to your Express setup:
 
-javascript
-Copy code
 const cors = require('cors');
 app.use(cors({
   origin: 'https://yourfrontendurl.com' // Adjust this to match your frontend URL
