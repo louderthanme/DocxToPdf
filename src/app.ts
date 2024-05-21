@@ -1,29 +1,32 @@
+// Import necessary modules
 import express, { Request, Response } from "express";
 import multer from "multer";
-import fs, { constants } from "fs"; // Import the file system module
-import convertToPdf from "./convertToPdf";
-import formatDate from "./dateFormatting";
-import cors from "cors";
+import fs, { constants } from "fs"; // File system for handling file operations
+import convertToPdf from "./convertToPdf"; // Custom module for converting documents to PDF
+import formatDate from "./dateFormatting"; // Utility to format the date for filenames
+import cors from "cors"; // CORS middleware to enable cross-origin requests
 
+// Extend Express request to include file and newFilename properties
 interface CustomRequest extends Request {
   file?: Express.Multer.File;
   newFilename?: string;
 }
 
+// Create an Express application
 const app = express();
 const port = 3000;
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = "uploads/";
+    // Check if the upload directory exists and is writable
+
     fs.access(uploadDir, constants.R_OK | constants.W_OK, (err) => {
       if (err) {
         // If an error occurs, assume the directory doesn't exist and try to create it
-        console.log(
-          `Directory does not exist: ${uploadDir}, attempting to create it.`
-        );
         try {
           fs.mkdirSync(uploadDir, { recursive: true });
-          console.log(`Directory created: ${uploadDir}`);
           cb(null, uploadDir); // Directory successfully created
         } catch (mkdirErr) {
           console.error(`Error creating directory: ${uploadDir}`, mkdirErr);
@@ -40,6 +43,8 @@ const storage = multer.diskStorage({
       }
     });
   },
+
+  // Function to determine the filename within the destination
   filename: function (req: CustomRequest, file, cb) {
     const fileExtensionRegex = /\.[0-9a-z]+$/i;
     const baseName = file.originalname.replace(fileExtensionRegex, "");
@@ -49,20 +54,25 @@ const storage = multer.diskStorage({
   },
 });
 
+// Multer configuration for handling file uploads
 const upload = multer({ storage: storage });
 
+// CORS configuration
 const corsOptions = {
   origin: 'https://frontend-docxtopdf.vercel.app', // make sure to change this to your frontend URL
-  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 200 
 };
 
+// Apply CORS middleware to the app
 app.use(cors(corsOptions));
 
+// Route to handle file conversion
 app.post(
   "/convert",
   upload.single("file"),
   (req: CustomRequest, res: Response) => {
     if (!req.file) {
+      // No file was uploaded
       return res.status(400).send("No file uploaded.");
     }
 
@@ -74,9 +84,9 @@ app.post(
         .send("Invalid file type. Please upload a .doc or .docx file.");
     }
 
-    const filePath = req.file.path;
-    console.log("File path:", filePath); // Debug log
+    const filePath = req.file.path;// Path to the uploaded file
 
+    // Convert the uploaded file to PDF
     convertToPdf(filePath, (err, convertedFilePath) => {
       if (err) {
         console.error("Error converting file:", err);
@@ -103,6 +113,7 @@ app.post(
         return res.status(500).send("No new filename set.");
       }
 
+      // Download the converted PDF file
       res.download(convertedFilePath, req.newFilename, (downloadErr) => {
         if (downloadErr) {
           console.error("Error downloading file:", downloadErr);
@@ -115,6 +126,7 @@ app.post(
   }
 );
 
+//start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
