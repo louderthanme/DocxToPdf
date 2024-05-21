@@ -2,7 +2,7 @@
  * Formats a JavaScript Date object into a DD-MM-YYYY string.
  * This format aligns with common date formatting preferences in Israel, 
  * I thought I'd add that for you.
- */
+ **/
 
 const formatDate = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, "0"); // Ensure two digits for the day.
