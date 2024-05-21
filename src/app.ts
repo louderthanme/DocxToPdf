@@ -60,7 +60,7 @@ const upload = multer({ storage: storage });
 // CORS configuration
 const corsOptions = {
   origin: 'https://frontend-docxtopdf.vercel.app', // make sure to change this to your frontend URL
-    optionsSuccessStatus: 200 
+  optionsSuccessStatus: 200 
 };
 
 // Apply CORS middleware to the app
